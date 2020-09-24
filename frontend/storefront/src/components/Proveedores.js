@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
-import ModalClientes from './ModalFeed'
+import ModalClientes from './ModalCliente'
 import ModalConfirm from './ModalConfirm';
 
 class Proveedores extends Component {
@@ -9,7 +9,7 @@ class Proveedores extends Component {
         super(props);
 
         this.state = {
-            clientes: [],
+            proveedores: [],
             initvalues: [],
             idDelete: '',
             showModal: false,
@@ -20,9 +20,9 @@ class Proveedores extends Component {
     openModal = (event) => {
         var id = event.target.value
         if (id) {
-            for (var i in this.state.clientes) {
-                if (this.state.clientes[i].id == id) {
-                    this.state.initvalues = this.state.clientes[i]
+            for (var i in this.state.proveedores) {
+                if (this.state.proveedores[i].id == id) {
+                    this.state.initvalues = this.state.proveedores[i]
                 }
             }
         }
@@ -37,18 +37,18 @@ class Proveedores extends Component {
     }
 
     componentDidMount() {
-        this.getResolutions()
+        this.getproveedores()
     }
 
-    getResolutions = () => {
+    getproveedores = () => {
         try {
             const tokens = JSON.parse(sessionStorage.getItem('loginState'))
-            Axios.get('http://localhost:5000/clientes', {
+            Axios.get('http://localhost:5000/proveedores', {
                 headers: { authorization: tokens.access_token }
             })
                 .then(result => {
-                    const clientes = result.data;
-                    this.setState({ clientes: clientes })
+                    const proveedores = result.data;
+                    this.setState({ proveedores: proveedores })
                 }).catch(res => {
                     console.log('sin respuesta')
                 })
@@ -65,10 +65,10 @@ class Proveedores extends Component {
 
     confirmDelete = () => {
         const id = this.state.idDelete
-        Axios.delete('http://localhost:5000/clientes/' + id)
+        Axios.delete('http://localhost:5000/proveedores/' + id)
             .then(res => {
                 this.setState({ showModalConfirm: false })
-                this.getResolutions()
+                this.getproveedores()
             }).catch(res => {
                 console.log("Error")
             }
@@ -84,7 +84,7 @@ class Proveedores extends Component {
             <div class="ui raised very padded text container segment">
                 <div class="ui relaxed divided list">
                     <h3 class="ui center aligned header ui block header" >
-                        Clientes
+                        Proveedores
                 </h3>
                     <div class="item">
                         <table class="ui celled table">
@@ -97,17 +97,17 @@ class Proveedores extends Component {
                                     <th>editar</th>
                                 </tr></thead>
                             <tbody>
-                                {this.state.clientes.map(clientes => {
+                                {this.state.proveedores.map(proveedores => {
                                     return (
                                         <tr>
-                                            <td data-label="id">{clientes.id}</td>
-                                            <td data-label="name">{clientes.name}</td>
-                                            <td data-label="address">{clientes.address}</td>
-                                            <td data-label="email">{clientes.email}</td>
-                                            <td data-label="phone">{clientes.phone}</td>
+                                            <td data-label="id">{proveedores.id}</td>
+                                            <td data-label="name">{proveedores.name}</td>
+                                            <td data-label="address">{proveedores.address}</td>
+                                            <td data-label="email">{proveedores.email}</td>
+                                            <td data-label="phone">{proveedores.phone}</td>
                                             <td>
-                                                <button value={clientes.id} onClick={this.openModal}> editar </button>
-                                                <button value={clientes.id} onClick={this.eliminar}> delete </button>
+                                                <button value={proveedores.id} onClick={this.openModal}> editar </button>
+                                                <button value={proveedores.id} onClick={this.eliminar}> delete </button>
                                             </td>
                                         </tr>
                                     )
@@ -120,13 +120,13 @@ class Proveedores extends Component {
                 <div class="ui center aligned basic segment">
                     <div class="ui left icon action input">
                         <div class="ui teal labeled icon button" onClick={this.openModal} >
-                            Agregar Cliente
+                            Agregar Proveedor
                                <i class="add icon"></i>
                         </div>
 
                     </div>
                 </div>
-                {this.state.showModal && <ModalClientes onClose={this.closeModal} upDate={this.getResolutions} values={this.state.initvalues} />}
+                {this.state.showModal && <ModalClientes onClose={this.closeModal} upDate={this.getproveedores} values={this.state.initvalues} url='http://localhost:5000/proveedores' />}
                 <ModalConfirm open={this.state.showModalConfirm} mensaje="Estas seguro de eliminar estos registros ?" confirm={this.confirmDelete} cancel={this.cancelDelete} />
             </div>
         )

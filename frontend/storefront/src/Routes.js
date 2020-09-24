@@ -14,7 +14,7 @@ class Routes extends Component {
         <Route exact path='/proveedores' component={Proveedores} />
       </Switch>
     )
-  }
+  }modalfeed
 }
 
 export default Routes

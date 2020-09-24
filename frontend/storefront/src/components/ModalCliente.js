@@ -3,7 +3,7 @@ import { Modal, Form, Header, Button } from "semantic-ui-react";
 import Axios from 'axios';
 import ErrorMsg from './ErrorMsg'
 
-class ModalFeed extends Component {
+class ModalCliente extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -39,7 +39,7 @@ class ModalFeed extends Component {
       email: this.state.email, phone: this.state.phone
     }
     if (this.state.edit) {      
-      Axios.put('http://localhost:5000/clientes', { data })
+      Axios.put(this.props.url, { data })
         .then(res => {
           this.closeModal()
           this.props.upDate()
@@ -49,7 +49,7 @@ class ModalFeed extends Component {
         )
     }
     else {      
-      Axios.post('http://localhost:5000/clientes', { data })
+      Axios.post(this.props.url, { data })
         .then(res => {
           this.closeModal()
           this.props.upDate()
@@ -107,4 +107,4 @@ class ModalFeed extends Component {
   }
 }
 
-export default ModalFeed
+export default ModalCliente

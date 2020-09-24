@@ -8,7 +8,6 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_r
 from marshmallow import Schema, fields
 
 
-
 app = Flask(__name__)
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -82,6 +81,15 @@ class ClientSchema(Schema):
     phone = fields.Int()
 
 
+class ProviderSchema(Schema):
+    id = fields.Int()
+    name = fields.Str()
+    address = fields.Str()
+    email = fields.Str()
+    phone = fields.Int()
+
+
+
 ##------------ENDPOINTS-------------##
 
 class Login(Resource):
@@ -146,8 +154,50 @@ class Clients(Resource):
         return {"data": "deleted"}, 201
 
 
+##---------providers----------##
+class Providers(Resource):
+    #@jwt_required
+    def get(self):
+        result = Provider.query.all()
+        res_schema = ProviderSchema(many=True).dump(result)
+        return res_schema
+
+    def post(self):
+        data = request.get_json()['data']
+        print(data['id'])
+        newProvider = Provider()
+        newProvider.id = data['id']
+        newProvider.name = data['name']
+        newProvider.address = data['address']
+        newProvider.email = data['email']
+        newProvider.phone = data['phone']
+        db.session.add(newProvider)
+        db.session.commit()
+        return{"data": "saved"}, 201
+
+    def put(self):
+        data = request.get_json()['data']
+        print(data['id'])
+        UpProvider = db.session.query(Provider).filter(Provider.id == data['id']).first()
+        UpProvider.id = data['id']
+        UpProvider.name = data['name']
+        UpProvider.address = data['address']
+        UpProvider.email = data['email']
+        UpProvider.phone = data['phone']
+        db.session.add(UpProvider)
+        db.session.commit()
+        return{"data": "saved"}, 201
+
+    def delete(self, id):
+        deldata = Provider.query.get(id)
+        db.session.delete(deldata)
+        db.session.commit()
+        return {"data": "deleted"}, 201
+
 api.add_resource(Login, '/login')
 api.add_resource(Clients, '/clientes', '/clientes/<id>')
+api.add_resource(Providers, '/proveedores', '/proveedores/<id>')
+
 
 
 if __name__ == '__main__':

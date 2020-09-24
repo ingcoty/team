@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
-import ModalFeed from './ModalFeed'
+import ModalCliente from './ModalCliente'
 import ModalConfirm from './ModalConfirm';
 
 class Clientes extends Component {
@@ -126,7 +126,7 @@ class Clientes extends Component {
 
                     </div>
                 </div>
-                {this.state.showModal && <ModalFeed onClose={this.closeModal} upDate={this.getResolutions} values={this.state.initvalues} />}
+                {this.state.showModal && <ModalCliente onClose={this.closeModal} upDate={this.getResolutions} values={this.state.initvalues} url='http://localhost:5000/clientes' />}
                 <ModalConfirm open={this.state.showModalConfirm} mensaje="Estas seguro de eliminar estos registros ?" confirm={this.confirmDelete} cancel={this.cancelDelete} />
             </div>
         )
