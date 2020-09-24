@@ -89,6 +89,11 @@ class ProviderSchema(Schema):
     phone = fields.Int()
 
 
+class ProductsSchema(Schema):
+    id = fields.Int()
+    description = fields.Str()
+    price = fields.Int()
+
 
 ##------------ENDPOINTS-------------##
 
@@ -112,18 +117,26 @@ class Login(Resource):
                 'refresh_token': refresh_token,
                 'auth': 'true',
             }
-
+  #@jwt_required
 ##------------clientes-----------##
 class Clients(Resource):
-    #@jwt_required
-    def get(self):
-        result = Client.query.all()
-        res_schema = ClientSchema(many=True).dump(result)
-        return res_schema
+    """obtener un cliente por id"""
+    def get(self, id):
+        result = Client.query.filter_by(id=id).first()
+        if(result):
+            res_schema = ClientSchema().dump(result)
+            return res_schema
+        else:
+            return{"message":"Cliente no existe"},404
+
 
     def post(self):
-        data = request.get_json()['data']
-        print(data['id'])
+        """crear un nuevo cliente"""
+        data = request.get_json()
+        exist = Client().query.filter_by(id=data['id']).first()
+        if exist != None:
+            return{"message":"cliente existe"}, 404
+
         newClient = Client()
         newClient.id = data['id']
         newClient.name = data['name']
@@ -132,12 +145,16 @@ class Clients(Resource):
         newClient.phone = data['phone']
         db.session.add(newClient)
         db.session.commit()
-        return{"data": "saved"}, 201
+        datareturn = Client().query.filter_by(id=data['id']).first()
+        return{"data": ClientSchema().dump(datareturn)}, 201
+
 
     def put(self):
-        data = request.get_json()['data']
-        print(data['id'])
+        """actualizar un cliente"""
+        data = request.get_json()
         UpClient = db.session.query(Client).filter(Client.id == data['id']).first()
+        if UpClient == None:
+            return{ "message": "cliente no existe"}, 404
         UpClient.id = data['id']
         UpClient.name = data['name']
         UpClient.address = data['address']
@@ -145,26 +162,45 @@ class Clients(Resource):
         UpClient.phone = data['phone']
         db.session.add(UpClient)
         db.session.commit()
-        return{"data": "saved"}, 201
+        UpClient = db.session.query(Client).filter(Client.id == data['id']).first()
+        return {"data": ClientSchema().dump(UpClient)}, 201
+
 
     def delete(self, id):
+        """borrar un cliente"""
         dataToDelete = Client.query.get(id)
+        if dataToDelete == None:
+            return {"message": "cliente no existe"}, 404
         db.session.delete(dataToDelete)
         db.session.commit()
-        return {"data": "deleted"}, 201
+        return {"data": id}, 202
 
 
-##---------providers----------##
-class Providers(Resource):
-    #@jwt_required
+class ClientsList(Resource):
     def get(self):
-        result = Provider.query.all()
-        res_schema = ProviderSchema(many=True).dump(result)
+        result = Client.query.all()
+        res_schema = ClientSchema(many=True).dump(result)
         return res_schema
 
+##------------Provideres-----------##
+class Providers(Resource):
+    """obtener un Provider por id"""
+    def get(self, id):
+        result = Provider.query.filter_by(id=id).first()
+        if(result):
+            res_schema = ProviderSchema().dump(result)
+            return res_schema
+        else:
+            return{"message":"Provider no existe"},404
+
+
     def post(self):
-        data = request.get_json()['data']
-        print(data['id'])
+        """crear un nuevo Provider"""
+        data = request.get_json()
+        exist = Provider().query.filter_by(id=data['id']).first()
+        if exist != None:
+            return{"message":"Provider existe"}, 404
+
         newProvider = Provider()
         newProvider.id = data['id']
         newProvider.name = data['name']
@@ -173,12 +209,16 @@ class Providers(Resource):
         newProvider.phone = data['phone']
         db.session.add(newProvider)
         db.session.commit()
-        return{"data": "saved"}, 201
+        datareturn = Provider().query.filter_by(id=data['id']).first()
+        return{"data": ProviderSchema().dump(datareturn)}, 201
+
 
     def put(self):
-        data = request.get_json()['data']
-        print(data['id'])
+        """actualizar un Provider"""
+        data = request.get_json()
         UpProvider = db.session.query(Provider).filter(Provider.id == data['id']).first()
+        if UpProvider == None:
+            return{ "message": "Provider no existe"}, 404
         UpProvider.id = data['id']
         UpProvider.name = data['name']
         UpProvider.address = data['address']
@@ -186,17 +226,97 @@ class Providers(Resource):
         UpProvider.phone = data['phone']
         db.session.add(UpProvider)
         db.session.commit()
-        return{"data": "saved"}, 201
+        UpProvider = db.session.query(Provider).filter(Provider.id == data['id']).first()
+        return {"data": ProviderSchema().dump(UpProvider)}, 201
+
 
     def delete(self, id):
-        deldata = Provider.query.get(id)
-        db.session.delete(deldata)
+        """borrar un Provider"""
+        dataToDelete = Provider.query.get(id)
+        if dataToDelete == None:
+            return {"message": "Provider no existe"}, 404
+        db.session.delete(dataToDelete)
         db.session.commit()
-        return {"data": "deleted"}, 201
+        return {"data": id}, 202
+
+
+class ProvidersList(Resource):
+    def get(self):
+        result = Provider.query.all()
+        res_schema = ProviderSchema(many=True).dump(result)
+        return res_schema
+
+
+
+##------------Productos-----------##
+class Productos(Resource):
+    """obtener un Products por id"""
+    def get(self, id):
+        result = Products.query.filter_by(id=id).first()
+        if(result):
+            res_schema = ProductsSchema().dump(result)
+            return res_schema
+        else:
+            return{"message":"Producto no existe"},404
+
+
+    def post(self):
+        """crear un nuevo Products"""
+        data = request.get_json()
+        exist = Products().query.filter_by(id=data['id']).first()
+        if exist != None:
+            return{"message":"Producto existe"}, 404
+
+        newProducts = Products()
+        newProducts.id = data['id']
+        newProducts.description = data['description']
+        newProducts.price = data['price']
+        db.session.add(newProducts)
+        db.session.commit()
+        datareturn = Products().query.filter_by(id=data['id']).first()
+        return{"data": ProductsSchema().dump(datareturn)}, 201
+
+
+    def put(self):
+        """actualizar un Products"""
+        data = request.get_json()
+        UpProducts = db.session.query(Products).filter(Products.id == data['id']).first()
+        if UpProducts == None:
+            return{ "message": "Producto no existe"}, 404
+        UpProducts.id = data['id']
+        UpProducts.description = data['description']
+        UpProducts.price = data['price']
+        db.session.add(UpProducts)
+        db.session.commit()
+        UpProducts = db.session.query(Products).filter(Products.id == data['id']).first()
+        return {"data": ProductsSchema().dump(UpProducts)}, 201
+
+
+    def delete(self, id):
+        """borrar un Products"""
+        dataToDelete = Products.query.get(id)
+        if dataToDelete == None:
+            return {"message": "Products no existe"}, 404
+        db.session.delete(dataToDelete)
+        db.session.commit()
+        return {"data": id}, 202
+
+
+class ProductosList(Resource):
+    def get(self):
+        result = Products.query.all()
+        res_schema = ProductsSchema(many=True).dump(result)
+        return res_schema
+
+
 
 api.add_resource(Login, '/login')
 api.add_resource(Clients, '/clientes', '/clientes/<id>')
+api.add_resource(ClientsList, '/clienteslist')
 api.add_resource(Providers, '/proveedores', '/proveedores/<id>')
+api.add_resource(ProvidersList, '/proveedoreslist')
+api.add_resource(Productos, '/productos', '/productos/<id>')
+api.add_resource(ProductosList, '/productoslist')
 
 
 

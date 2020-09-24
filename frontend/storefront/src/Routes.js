@@ -4,6 +4,7 @@ import { Component } from 'react';
 
 import Clientes from './components/Clientes'
 import Proveedores from './components/Proveedores';
+import Productos from './components/Productos';
 
 class Routes extends Component {
   
@@ -12,6 +13,7 @@ class Routes extends Component {
       <Switch>
         <Route exact path='/clientes' component={Clientes} />
         <Route exact path='/proveedores' component={Proveedores} />
+        <Route exact path='/productos' component={Productos} />
       </Switch>
     )
   }modalfeed

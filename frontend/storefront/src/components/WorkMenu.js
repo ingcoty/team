@@ -53,12 +53,12 @@ class WorkMenu extends Component {
           Proveedores
         </Menu.Item>
 
-        <Menu.Item as={Link} to='/Compras'
-          name='Compras'
-          active={activeItem === 'Compras'}
+        <Menu.Item as={Link} to='/productos'
+          name='Productos'
+          active={activeItem === 'Productos'}
           onClick={this.handleItemClick}
         >
-          Compras
+          Productos
         </Menu.Item>
 
         <Menu.Item as={Link} to='/Inventario'
