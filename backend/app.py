@@ -1,24 +1,27 @@
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_restful import Api, Resource, reqparse
-from flask_restful.reqparse import RequestParser
+from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 from marshmallow import Schema, fields
+from sqlalchemy.orm import relationship
 
 
 app = Flask(__name__)
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
+ma = Marshmallow(app)
+migrate = Migrate(app, db)
 api = Api(app)
 app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
 jwt = JWTManager(app)
 
 
 ##--------------MODELS-----------------##
-
 class Client(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
@@ -44,17 +47,20 @@ class Provider(db.Model):
 class BillHeader(db.Model):
     __tablename__ = 'billheader'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    client = db.Column(db.ForeignKey('client.id'), nullable=False)
-    date = db.Column(db.Date, nullable=False)
+    provider_id = db.Column(db.Integer, db.ForeignKey("provider.id"), nullable=False)
+    provider = relationship("Provider")
+    date = db.Column(db.String, nullable=False)
     value = db.Column(db.Integer, nullable=False)
-    billtype = db.Column(db.Integer, nullable=False)
 
 
 class BillDetail(db.Model):
     __tablename__ = 'billdetail'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    bill = db.Column(db.ForeignKey('billheader.id'), nullable=False)
-    products = db.Column(db.ForeignKey('products.id'), nullable=False)
+    bill_id = db.Column(db.Integer, db.ForeignKey('billheader.id'), nullable=False)
+    bill = relationship("BillHeader")
+    products_id = db.Column(db.ForeignKey('products.id'), nullable=False)
+    products = relationship("Products")
+    unitprice =  db.Column(db.Integer)
     quantity = db.Column(db.Integer)
 
 
@@ -95,6 +101,21 @@ class ProductsSchema(Schema):
     price = fields.Int()
 
 
+class BillHeaderSchema(Schema):
+    id = fields.Int()
+    provider = fields.Nested(ProviderSchema)
+    date = fields.Str()
+    value = fields.Int()
+
+
+class BillDetailSchema(Schema):
+    id = fields.Int()
+    #bill = fields.Nested(BillHeaderSchema)
+    products = fields.Nested(ProductsSchema)
+    unitprice = fields.Int()
+
+
+
 ##------------ENDPOINTS-------------##
 
 class Login(Resource):
@@ -132,7 +153,7 @@ class Clients(Resource):
 
     def post(self):
         """crear un nuevo cliente"""
-        data = request.get_json()
+        data = request.get_json()['data']
         exist = Client().query.filter_by(id=data['id']).first()
         if exist != None:
             return{"message":"cliente existe"}, 404
@@ -151,7 +172,8 @@ class Clients(Resource):
 
     def put(self):
         """actualizar un cliente"""
-        data = request.get_json()
+        data = request.get_json()['data']
+        print(data)
         UpClient = db.session.query(Client).filter(Client.id == data['id']).first()
         if UpClient == None:
             return{ "message": "cliente no existe"}, 404
@@ -196,7 +218,7 @@ class Providers(Resource):
 
     def post(self):
         """crear un nuevo Provider"""
-        data = request.get_json()
+        data = request.get_json()['data']
         exist = Provider().query.filter_by(id=data['id']).first()
         if exist != None:
             return{"message":"Provider existe"}, 404
@@ -215,7 +237,7 @@ class Providers(Resource):
 
     def put(self):
         """actualizar un Provider"""
-        data = request.get_json()
+        data = request.get_json()['data']
         UpProvider = db.session.query(Provider).filter(Provider.id == data['id']).first()
         if UpProvider == None:
             return{ "message": "Provider no existe"}, 404
@@ -247,7 +269,6 @@ class ProvidersList(Resource):
         return res_schema
 
 
-
 ##------------Productos-----------##
 class Productos(Resource):
     """obtener un Products por id"""
@@ -262,7 +283,8 @@ class Productos(Resource):
 
     def post(self):
         """crear un nuevo Products"""
-        data = request.get_json()
+        data = request.get_json()['data']
+        print(data)
         exist = Products().query.filter_by(id=data['id']).first()
         if exist != None:
             return{"message":"Producto existe"}, 404
@@ -279,7 +301,7 @@ class Productos(Resource):
 
     def put(self):
         """actualizar un Products"""
-        data = request.get_json()
+        data = request.get_json()['data']
         UpProducts = db.session.query(Products).filter(Products.id == data['id']).first()
         if UpProducts == None:
             return{ "message": "Producto no existe"}, 404
@@ -309,6 +331,151 @@ class ProductosList(Resource):
         return res_schema
 
 
+##------------Facturacion-----------##
+class Factura(Resource):
+    """obtener una factura id"""
+    def get(self, id):
+        result = BillHeader.query.filter_by(id=id).first()
+        if(result):
+            res_schema = BillHeaderSchema().dump(result)
+            return res_schema
+        else:
+            return{"message":"Producto no existe"},404
+
+
+    def post(self):
+        """crear una nueva factura"""
+        data = request.get_json()['data']
+        print(data)
+        factura = BillHeader()
+        factura.provider_id = data['provider']
+        factura.provider = Provider.query.filter_by(id=data['provider']).first()
+        factura.date = data['date']
+        factura.value = data['value']
+        db.session.add(factura)
+        db.session.commit()
+
+        factura = db.session.query(BillHeader).order_by(BillHeader.id.desc()).first()
+        for producto in data['productos']:
+            detalle = BillDetail()
+            detalle.bill_id = factura
+            detalle.bill = factura
+            detalle.products_id = producto['id']
+            product = Products.query.filter_by(id=producto['id']).first()
+            detalle.products = product
+            detalle.quantity = producto['quantity']
+            detalle.unitprice = producto['unitprice']
+            db.session.add(detalle)
+
+
+        db.session.commit()
+        return {"data": BillHeaderSchema().dump(factura)}, 201
+
+    """ las facturas no se pueden actualizar
+    def put(self):
+        "actualizar una factura"
+        data = request.get_json()['data']
+        UpProducts = db.session.query(Products).filter(Products.id == data['id']).first()
+        if UpProducts == None:
+            return{ "message": "Producto no existe"}, 404
+        UpProducts.id = data['id']
+        UpProducts.description = data['description']
+        UpProducts.price = data['price']
+        db.session.add(UpProducts)
+        db.session.commit()
+        UpProducts = db.session.query(Products).filter(Products.id == data['id']).first()
+        return {"data": ProductsSchema().dump(UpProducts)}, 201
+    """
+
+    def delete(self, id):
+        """borrar una factura"""
+        dataToDelete = BillHeader.query.get(id)
+        if dataToDelete == None:
+            return {"message": "Factura no existe"}, 404
+        db.session.delete(dataToDelete)
+        db.session.commit()
+        return {"data": id}, 202
+
+
+class FacturaList(Resource):
+    def get(self):
+        result = BillHeader.query.all()
+        res_schema = BillHeaderSchema(many=True).dump(result)
+        return res_schema
+
+
+##------------Detalle-----------##
+class Detalle(Resource):
+    """obtener una factura id"""
+    def get(self, id):
+        result = BillDetail.query.filter_by(bill_id=id).all()
+        if(result):
+            res_schema = BillDetailSchema(many=True).dump(result)
+            return res_schema
+        else:
+            return{"message":"Producto no existe"},404
+
+
+    def post(self):
+        """crear una nueva factura"""
+        data = request.get_json()['data']
+        print(data)
+        factura = BillHeader()
+        factura.provider_id = data['provider']
+        factura.provider = Provider.query.filter_by(id=data['provider']).first()
+        factura.date = data['date']
+        factura.value = data['value']
+        db.session.add(factura)
+        db.session.commit()
+
+        factura = db.session.query(BillHeader).order_by(BillHeader.id.desc()).first()
+        for producto in data['productos']:
+            detalle = BillDetail()
+            detalle.bill_id = factura
+            detalle.bill = factura
+            detalle.products_id = producto['id']
+            product = Products.query.filter_by(id=producto['id']).first()
+            detalle.products = product
+            detalle.quantity = producto['quantity']
+            db.session.add(detalle)
+
+
+        db.session.commit()
+        return {"data": BillHeaderSchema().dump(factura)}, 201
+
+    """ las facturas no se pueden actualizar
+    def put(self):
+        "actualizar una factura"
+        data = request.get_json()['data']
+        UpProducts = db.session.query(Products).filter(Products.id == data['id']).first()
+        if UpProducts == None:
+            return{ "message": "Producto no existe"}, 404
+        UpProducts.id = data['id']
+        UpProducts.description = data['description']
+        UpProducts.price = data['price']
+        db.session.add(UpProducts)
+        db.session.commit()
+        UpProducts = db.session.query(Products).filter(Products.id == data['id']).first()
+        return {"data": ProductsSchema().dump(UpProducts)}, 201
+    """
+
+    def delete(self, id):
+        """borrar una factura"""
+        dataToDelete = BillHeader.query.get(id)
+        if dataToDelete == None:
+            return {"message": "Factura no existe"}, 404
+        db.session.delete(dataToDelete)
+        db.session.commit()
+        return {"data": id}, 202
+
+
+class FacturaList(Resource):
+    def get(self):
+        result = BillHeader.query.all()
+        res_schema = BillHeaderSchema(many=True).dump(result)
+        return res_schema
+
+
 
 api.add_resource(Login, '/login')
 api.add_resource(Clients, '/clientes', '/clientes/<id>')
@@ -317,6 +484,10 @@ api.add_resource(Providers, '/proveedores', '/proveedores/<id>')
 api.add_resource(ProvidersList, '/proveedoreslist')
 api.add_resource(Productos, '/productos', '/productos/<id>')
 api.add_resource(ProductosList, '/productoslist')
+api.add_resource(Factura, '/factura', '/factura/<id>')
+api.add_resource(FacturaList, '/facturalist')
+api.add_resource(Detalle, '/detalle', '/detalle/<id>')
+#api.add_resource(DetalleList, '/detallelist')
 
 
 

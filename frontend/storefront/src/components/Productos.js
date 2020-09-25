@@ -2,14 +2,15 @@ import React, { Component } from 'react'
 import Axios from 'axios'
 import ModalClientes from './ModalCliente'
 import ModalConfirm from './ModalConfirm';
+import ModalProductos from './ModalProductos';
 
-class Proveedores extends Component {
+class Productos extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            proveedores: [],
+            productos: [],
             initvalues: [],
             idDelete: '',
             showModal: false,
@@ -20,9 +21,9 @@ class Proveedores extends Component {
     openModal = (event) => {
         var id = event.target.value
         if (id) {
-            for (var i in this.state.proveedores) {
-                if (this.state.proveedores[i].id == id) {
-                    this.state.initvalues = this.state.proveedores[i]
+            for (var i in this.state.productos) {
+                if (this.state.productos[i].id == id) {
+                    this.state.initvalues = this.state.productos[i]
                 }
             }
         }
@@ -37,18 +38,18 @@ class Proveedores extends Component {
     }
 
     componentDidMount() {
-        this.getproveedores()
+        this.getproductos()
     }
 
-    getproveedores = () => {
+    getproductos = () => {
         try {
             const tokens = JSON.parse(sessionStorage.getItem('loginState'))
-            Axios.get('http://localhost:5000/proveedores', {
+            Axios.get('http://localhost:5000/productoslist', {
                 headers: { authorization: tokens.access_token }
             })
                 .then(result => {
-                    const proveedores = result.data;
-                    this.setState({ proveedores: proveedores })
+                    const productos = result.data;
+                    this.setState({ productos: productos })
                 }).catch(res => {
                     console.log('sin respuesta')
                 })
@@ -65,10 +66,10 @@ class Proveedores extends Component {
 
     confirmDelete = () => {
         const id = this.state.idDelete
-        Axios.delete('http://localhost:5000/proveedores/' + id)
+        Axios.delete('http://localhost:5000/productos/' + id)
             .then(res => {
                 this.setState({ showModalConfirm: false })
-                this.getproveedores()
+                this.getproductos()
             }).catch(res => {
                 console.log("Error")
             }
@@ -84,30 +85,26 @@ class Proveedores extends Component {
             <div class="ui raised very padded text container segment">
                 <div class="ui relaxed divided list">
                     <h3 class="ui center aligned header ui block header" >
-                        Proveedores
+                    productos
                 </h3>
                     <div class="item">
                         <table class="ui celled table">
                             <thead>
                                 <tr><th>id</th>
-                                    <th>name</th>
-                                    <th>address</th>
-                                    <th>email</th>
-                                    <th>phone</th>
-                                    <th>editar</th>
+                                    <th>descipcion</th>
+                                    <th>precio</th>  
+                                    <th>editar</th>                                   
                                 </tr></thead>
                             <tbody>
-                                {this.state.proveedores.map(proveedores => {
+                                {this.state.productos.map(productos => {
                                     return (
                                         <tr>
-                                            <td data-label="id">{proveedores.id}</td>
-                                            <td data-label="name">{proveedores.name}</td>
-                                            <td data-label="address">{proveedores.address}</td>
-                                            <td data-label="email">{proveedores.email}</td>
-                                            <td data-label="phone">{proveedores.phone}</td>
+                                            <td data-label="id">{productos.id}</td>
+                                            <td data-label="name">{productos.description}</td>
+                                            <td data-label="address">{productos.price}</td>                                            
                                             <td>
-                                                <button value={proveedores.id} onClick={this.openModal}> editar </button>
-                                                <button value={proveedores.id} onClick={this.eliminar}> delete </button>
+                                                <button value={productos.id} onClick={this.openModal}> editar </button>
+                                                <button value={productos.id} onClick={this.eliminar}> delete </button>
                                             </td>
                                         </tr>
                                     )
@@ -120,18 +117,17 @@ class Proveedores extends Component {
                 <div class="ui center aligned basic segment">
                     <div class="ui left icon action input">
                         <div class="ui teal labeled icon button" onClick={this.openModal} >
-                            Agregar Proveedor
+                            Agregar Producto
                                <i class="add icon"></i>
                         </div>
 
                     </div>
                 </div>
-                {this.state.showModal && <ModalClientes onClose={this.closeModal} upDate={this.getproveedores} values={this.state.initvalues} url='http://localhost:5000/proveedores' />}
+                {this.state.showModal && <ModalProductos onClose={this.closeModal} upDate={this.getproductos} values={this.state.initvalues} url='http://localhost:5000/productos' />}
                 <ModalConfirm open={this.state.showModalConfirm} mensaje="Estas seguro de eliminar estos registros ?" confirm={this.confirmDelete} cancel={this.cancelDelete} />
             </div>
         )
     }
 }
 
-
-export default Proveedores;
+export default Productos;

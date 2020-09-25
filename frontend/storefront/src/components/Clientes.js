@@ -43,7 +43,7 @@ class Clientes extends Component {
     getResolutions = () => {
         try {
             const tokens = JSON.parse(sessionStorage.getItem('loginState'))
-            Axios.get('http://localhost:5000/clientes', {
+            Axios.get('http://localhost:5000/clienteslist', {
                 headers: { authorization: tokens.access_token }
             })
                 .then(result => {
@@ -126,7 +126,7 @@ class Clientes extends Component {
 
                     </div>
                 </div>
-                {this.state.showModal && <ModalCliente onClose={this.closeModal} upDate={this.getResolutions} values={this.state.initvalues} url='http://localhost:5000/clientes' />}
+                {this.state.showModal && <ModalCliente onClose={this.closeModal} upDate={this.getResolutions} values={this.state.initvalues} url='http://localhost:5000/clients' />}
                 <ModalConfirm open={this.state.showModalConfirm} mensaje="Estas seguro de eliminar estos registros ?" confirm={this.confirmDelete} cancel={this.cancelDelete} />
             </div>
         )
