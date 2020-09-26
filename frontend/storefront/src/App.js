@@ -20,7 +20,7 @@ class App extends Component {
     const credentials = JSON.parse(sessionStorage.getItem('loginState'))
     if (credentials != null) {
       this.setState({ credentials: credentials })
-      this.setState({ logged: credentials.logged })
+      this.setState({ logged: credentials.logged })      
     }
   }
 

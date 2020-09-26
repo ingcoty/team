@@ -32,6 +32,6 @@ class BillHeaderSchema(Schema):
 
 class BillDetailSchema(Schema):
     id = fields.Int()
-    bill = fields.Nested(BillHeaderSchema)
+    #bill = fields.Nested(BillHeaderSchema)
     products = fields.Nested(ProductsSchema)
     unitprice = fields.Int()

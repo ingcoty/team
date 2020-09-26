@@ -8,16 +8,17 @@ class ModalCompras extends Component {
   constructor(props) {
     super(props);
     this.getCodProvider = this.getCodProvider.bind(this)
-    this.state = {      
+    this.getCodProduct = this.getCodProduct.bind(this)
+    this.state = {
       postHandler: false,
-      providercode:''      
+      providercode: [],
+      productcode: [],
+      productos: [],
+      selected: [],
+      total:0,
+      cantidad: 1
     }
   }
-
-  componentDidMount() {
-
-  }
-
 
   createCompra = event => {
     event.preventDefault()
@@ -47,36 +48,29 @@ class ModalCompras extends Component {
     }
   }
 
-  getNumberId = event => {
-    this.setState({ id: event.target.value })
+  getCantidad = event => {
+    this.setState({ cantidad: event.target.value })
   }
 
-  getName = event => {
-    this.setState({ name: event.target.value })
+  getCodProvider(code) {
+    this.setState({ providercode: code })
   }
 
-  getAddress = event => {
-    this.setState({ address: event.target.value })
-  }
-
-  getEmail = event => {
-    this.setState({ email: event.target.value })
-  }
-
-  getPhone = event => {
-    this.setState({ phone: event.target.value })
-  }
-
-  getCodProvider(code){
-      this.setState({providercode:code})
-  }
-
-  getCodProduct(code){
-    console.log(code)
+  getCodProduct(code) {
+    this.setState({ productcode: code })
   }
 
   closeModal = () => {
     this.props.onClose()
+  }
+
+  agregar = () => {
+    const selected = this.state.selected
+    var product = Object.assign(this.state.productcode, { 'quantity': this.state.cantidad })
+    var total = parseInt(this.state.total) + parseInt(product.quantity) * parseInt(product.price);
+    this.setState({total:total})  
+    selected.push(product)
+    this.setState({ selected })
   }
 
   render() {
@@ -91,7 +85,7 @@ class ModalCompras extends Component {
               getcode={this.getCodProvider}
               closeMsg={this.closeMsgError}
               label={"Proveedor"}
-              holder={"Select Provider"}              
+              holder={"Select Provider"}
             />
 
             <CmbAutocomplete
@@ -99,14 +93,38 @@ class ModalCompras extends Component {
               getcode={this.getCodProduct}
               closeMsg={this.closeMsgError}
               label={"Producto"}
-              holder={"Select Product"}              
+              holder={"Select Product"}
             />
+            <Form.Input label="cantidad" required type="number" placeholder="cantidad" onChange={this.getCantidad} value={this.state.cantidad} />
+            <div class="ui small basic icon buttons">
+              <button class="ui button" onClick={this.agregar}><i class="plus square icon"></i></button>
+            </div>
 
-            <Form.Input label="id" required type="number" placeholder="Numero de Identificacion" onChange={this.getNumberId} value={this.state.id} />
-            <Form.Input label="name" required type="text" placeholder="Nombre" onChange={this.getName} value={this.state.name} />
-            <Form.Input label="address" required type="text" placeholder="Direccion" onChange={this.getAddress} value={this.state.address} />
-            <Form.Input label="email" required type="text" placeholder="Email" onChange={this.getEmail} value={this.state.email} />
-            <Form.Input label="phone" required type="number" placeholder="Telenfono" onChange={this.getPhone} value={this.state.phone} />
+            <table class="ui celled table">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Description</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Total</th>
+                 </tr>
+              </thead>
+              <tbody>
+                {this.state.selected.map(productos => {
+                  return (
+                    <tr>
+                      <td>{productos.id}</td>
+                      <td>{productos.description}</td>
+                      <td>{productos.quantity}</td>
+                      <td>{productos.price}</td>
+                      <td> {productos.price * productos.quantity}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+              <p><strong>Total: {this.state.total}</strong></p>
             {this.state.postHandler && <ErrorMsg title="Error al crear cliente" description="Verifique que el id no esté creado" />}
           </Modal.Content>
           <Modal.Actions>

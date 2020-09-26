@@ -6,8 +6,8 @@ class Client(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     address = db.Column(db.String, nullable=False)
-    email = db.Column(db.String, unique=True, nullable=False)
-    phone = db.Column(db.Integer, unique=True, nullable=False)
+    email = db.Column(db.String, nullable=False)
+    phone = db.Column(db.Integer, nullable=False)
 
 
 class Products(db.Model):
@@ -20,8 +20,8 @@ class Provider(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     address = db.Column(db.String, nullable=False)
-    email = db.Column(db.String, unique=True, nullable=False)
-    phone = db.Column(db.Integer, unique=True, nullable=False)
+    email = db.Column(db.String, nullable=False)
+    phone = db.Column(db.Integer, nullable=False)
 
 
 class BillHeader(db.Model):
@@ -46,9 +46,9 @@ class BillDetail(db.Model):
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user = db.Column(db.String, unique=True, nullable=False)
-    password = db.Column(db.String, unique=True, nullable=False)
-    rol = db.Column(db.String, unique=True, nullable=False) #1.admin - 2.user
+    user = db.Column(db.String(300), unique=True, nullable=False)
+    password = db.Column(db.String(300) ,unique=True, nullable=False)
+    rol = db.Column(db.String, nullable=False) #1.admin - 2.user
 
 
 class Inventory(db.Model):

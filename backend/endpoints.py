@@ -13,23 +13,31 @@ from backend import db
 
 class Login(Resource):
     def post(self):
+        data = request.get_json()
+        print(data)
         parser = reqparse.RequestParser()
         parser.add_argument('user', help='This field cannot be blank', required=True)
         parser.add_argument('password', help='This field cannot be blank', required=True)
         data = parser.parse_args()
         existingUser = db.session.query(User).filter(User.user == data['user']).first()
+
         if(not existingUser):
             return {'auth':'false'}
 
         if(data['password'] == existingUser.password):
+            print('retorno ok')
             access_token = create_access_token(identity=data['user'])
             refresh_token = create_refresh_token(identity=data['user'])
+            print(access_token)
+
             return {
                 'msg': 'login as {}'.format(existingUser.user),
                 'access_token': 'Bearer ' + access_token,
                 'refresh_token': refresh_token,
                 'auth': 'true',
             }
+        else:
+            return {'auth': 'false'}, 200
 
 #@jwt_required
 class Clients(Resource):
@@ -353,10 +361,21 @@ class FacturaList(Resource):
         return res_schema
 
 
+class Usuario(Resource):
+    def post(self):
+        data = request.get_json()['data']
+        newuser = User()
+        newuser.user = data['user']
+        newuser.password = data['password']
+        newuser.rol = '1'
+        db.session.add(newuser)
+        db.session.commit()
+        return {"data": data}, 201
 
 
 def add_api(api):
     api.add_resource(Login, '/login')
+    api.add_resource(Usuario, '/usuario')
     api.add_resource(Clients, '/clientes', '/clientes/<id>')
     api.add_resource(ClientsList, '/clienteslist')
     api.add_resource(Providers, '/proveedores', '/proveedores/<id>')

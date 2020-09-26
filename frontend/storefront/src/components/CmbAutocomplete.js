@@ -10,7 +10,8 @@ class CmbAutocomplete extends Component {
 
         this.state = {
             value: this.props.initvalue,
-            options: []
+            options: [],
+            fulldata: []
         }
         this.source = this.props.source
     }
@@ -39,6 +40,7 @@ class CmbAutocomplete extends Component {
         Axios.get(this.props.source)
             .then(res => {
                 const data = res.data;
+                this.setState({ fulldata: data })
                 data.map(item => {
                     if (item.name) {
                         options.push({
@@ -60,7 +62,11 @@ class CmbAutocomplete extends Component {
 
     getValue = (obj, { value }) => {
         this.setState({ value })
-        this.props.getcode(value)
+        for (var i in this.state.fulldata) {
+            if (this.state.fulldata[i].id == value) {
+                this.props.getcode(this.state.fulldata[i])
+            }
+        }
         //this.props.closeMsg()
     }
 
@@ -79,7 +85,7 @@ class CmbAutocomplete extends Component {
                     options={this.state.options}
                     onChange={this.getValue}
                     value={value}
-                />                
+                />
             </div>
         )
     }
