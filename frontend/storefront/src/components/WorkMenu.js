@@ -61,12 +61,12 @@ class WorkMenu extends Component {
           Productos
         </Menu.Item>
 
-        <Menu.Item as={Link} to='/Inventario'
-          name='inventarios'
-          active={activeItem === 'inventarios'}
+        <Menu.Item as={Link} to='/Compras'
+          name='compras'
+          active={activeItem === 'compras'}
           onClick={this.handleItemClick}
         >
-          Inventario
+          Compras
         </Menu.Item>
 
         <div class="ui small basic icon buttons">

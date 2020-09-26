@@ -65,7 +65,7 @@ class ModalProductos extends Component {
   }
 
   getPrice = event => {
-    this.setState({ price: event.target.value })
+    this.setState({ price: event.target.value                                                                                                                          })
   }
 
   closeModal = () => {
