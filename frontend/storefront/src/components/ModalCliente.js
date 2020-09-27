@@ -14,20 +14,20 @@ class ModalCliente extends Component {
       phone: '',
       postHandler: false,
       edit: false
-    }    
+    }
   }
 
-  componentDidMount(){
-    if (Object.keys(this.props.values).length) {      
-      this.setState({id:this.props.values.id});
-      this.setState({name:this.props.values.name});
-      this.setState({address:this.props.values.address});
-      this.setState({email:this.props.values.email});
-      this.setState({phone:this.props.values.phone});
-      this.setState({edit:true});     
+  componentDidMount() {
+    if (Object.keys(this.props.values).length) {
+      this.setState({ id: this.props.values.id });
+      this.setState({ name: this.props.values.name });
+      this.setState({ address: this.props.values.address });
+      this.setState({ email: this.props.values.email });
+      this.setState({ phone: this.props.values.phone });
+      this.setState({ edit: true });
     }
-    else{
-      this.setState({edit:false});;
+    else {
+      this.setState({ edit: false });;
     }
   }
 
@@ -38,8 +38,11 @@ class ModalCliente extends Component {
       id: this.state.id, name: this.state.name, address: this.state.address,
       email: this.state.email, phone: this.state.phone
     }
-    if (this.state.edit) {      
-      Axios.put(this.props.url, { data })
+    const tokens = JSON.parse(sessionStorage.getItem('loginState'))
+    if (this.state.edit) {
+      Axios.put(this.props.url, { data }, {
+        headers: { authorization: tokens.access_token }
+      })
         .then(res => {
           this.closeModal()
           this.props.upDate()
@@ -48,8 +51,10 @@ class ModalCliente extends Component {
         }
         )
     }
-    else {      
-      Axios.post(this.props.url, { data })
+    else {
+      Axios.post(this.props.url, { data }, {
+        headers: { authorization: tokens.access_token }
+      })
         .then(res => {
           this.closeModal()
           this.props.upDate()

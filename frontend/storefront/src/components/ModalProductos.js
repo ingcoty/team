@@ -34,8 +34,9 @@ class ModalProductos extends Component {
       id: this.state.id, description: this.state.description, price: this.state.price
     }
     console.log(data)
+    const tokens = JSON.parse(sessionStorage.getItem('loginState'))
     if (this.state.edit) {      
-      Axios.put(this.props.url, { data })
+      Axios.put(this.props.url, { data }, {headers: { authorization: tokens.access_token }})
         .then(res => {
           this.closeModal()
           this.props.upDate()
@@ -45,7 +46,7 @@ class ModalProductos extends Component {
         )
     }
     else {      
-      Axios.post(this.props.url, { data })
+      Axios.post(this.props.url, { data }, {headers: { authorization: tokens.access_token }})
         .then(res => {
           this.closeModal()
           this.props.upDate()
@@ -76,7 +77,7 @@ class ModalProductos extends Component {
     return (
       <div>
         <Modal as={Form} onSubmit={this.createProduct} open={true} size="tiny">
-          <Header icon="pencil" content="Agregar Resolución" as="h3" />
+          <Header icon="pencil" content="Agregar Producto" as="h3" />
           <Modal.Content>
             <Form.Input label="id" required type="number" placeholder="Numero de Identificacion" onChange={this.getNumberId} value={this.state.id} />
             <Form.Input label="description" required type="text" placeholder="Descripcion" onChange={this.getDescription} value={this.state.description} />

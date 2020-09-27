@@ -3,7 +3,6 @@ import { Menu } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { UserContext } from './UserContext';
 
-
 class WorkMenu extends Component {
   constructor(props) {
     super(props);
@@ -12,20 +11,6 @@ class WorkMenu extends Component {
       col:''
     }
   }
-
- /* componentDidMount() {
-    const credentials = JSON.parse(sessionStorage.getItem('loginState'))
-    if (credentials != null) {
-      try {
-        this.setState({ col: credentials.colegio[0].NOMBRE })
-        this.setState({ user: credentials.colegio[0].DATOS_RECTOR.APELLIDO1 
-                       + ' ' +credentials.colegio[0].DATOS_RECTOR.APELLIDO2
-                       + ' ' +credentials.colegio[0].DATOS_RECTOR.NOMBRE1})
-      }
-      catch{ }
-    }
-  }
-*/
 
   handleItemClick = (e, { name }) => {
     this.setState({ activeItem: name });

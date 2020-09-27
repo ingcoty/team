@@ -15,38 +15,31 @@ class ModalCompras extends Component {
       productcode: [],
       productos: [],
       selected: [],
-      total:0,
+      total: 0,
       cantidad: 1
     }
   }
 
   createCompra = event => {
-    event.preventDefault()
+    //event.preventDefault()
+    var date = new Date()
     const data = {
-      id: this.state.id, name: this.state.name, address: this.state.address,
-      email: this.state.email, phone: this.state.phone
+      "provider": this.state.providercode.id,
+      "date": date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear(),
+      "value": this.state.total,
+      "productos": this.state.selected
     }
-    if (this.state.edit) {
-      Axios.put(this.props.url, { data })
-        .then(res => {
-          this.closeModal()
-          this.props.upDate()
-        }).catch(res => {
-          this.setState({ postHandler: true })
-        }
-        )
-    }
-    else {
-      Axios.post(this.props.url, { data })
-        .then(res => {
-          this.closeModal()
-          this.props.upDate()
-        }).catch(res => {
-          this.setState({ postHandler: true })
-        }
-        )
-    }
+    const tokens = JSON.parse(sessionStorage.getItem('loginState'))
+    Axios.post(this.props.url, { data }, {headers: { authorization: tokens.access_token }})
+      .then(res => {
+        this.closeModal()
+        this.props.upDate()
+      }).catch(res => {
+        this.setState({ postHandler: true })
+      }
+      )
   }
+
 
   getCantidad = event => {
     this.setState({ cantidad: event.target.value })
@@ -68,7 +61,7 @@ class ModalCompras extends Component {
     const selected = this.state.selected
     var product = Object.assign(this.state.productcode, { 'quantity': this.state.cantidad })
     var total = parseInt(this.state.total) + parseInt(product.quantity) * parseInt(product.price);
-    this.setState({total:total})  
+    this.setState({ total: total })
     selected.push(product)
     this.setState({ selected })
   }
@@ -76,7 +69,7 @@ class ModalCompras extends Component {
   render() {
     return (
       <div>
-        <Modal as={Form} onSubmit={this.createClient} open={true} size="tiny">
+        <Modal as={Form} open={true} size="tiny">
           <Header icon="pencil" content="Agregar Compra" as="h3" />
           <Modal.Content>
 
@@ -108,7 +101,7 @@ class ModalCompras extends Component {
                   <th>Quantity</th>
                   <th>Price</th>
                   <th>Total</th>
-                 </tr>
+                </tr>
               </thead>
               <tbody>
                 {this.state.selected.map(productos => {
@@ -124,12 +117,12 @@ class ModalCompras extends Component {
                 })}
               </tbody>
             </table>
-              <p><strong>Total: {this.state.total}</strong></p>
-            {this.state.postHandler && <ErrorMsg title="Error al crear cliente" description="Verifique que el id no esté creado" />}
+            <p><strong>Total: {this.state.total}</strong></p>
+            {this.state.postHandler && <ErrorMsg title="Error al crear factura" description="Verifique todos los campos" />}
           </Modal.Content>
           <Modal.Actions>
             <Button color="red" icon="times" content="Close" onClick={this.closeModal} />
-            <Button type="submit" color="green" icon="save" content="Save" />
+            <Button color="green" icon="save" content="Save"  onClick={this.createCompra} />
           </Modal.Actions>
         </Modal>
       </div>

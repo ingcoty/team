@@ -66,7 +66,10 @@ class Productos extends Component {
 
     confirmDelete = () => {
         const id = this.state.idDelete
-        Axios.delete('http://localhost:5000/productos/' + id)
+        const tokens = JSON.parse(sessionStorage.getItem('loginState'))
+        Axios.delete('http://localhost:5000/productos/' + id, {
+            headers: { authorization: tokens.access_token }
+        })
             .then(res => {
                 this.setState({ showModalConfirm: false })
                 this.getproductos()

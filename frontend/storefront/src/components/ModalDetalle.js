@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import { Modal, Form, Header, Button } from "semantic-ui-react";
 import Axios from 'axios';
-import ErrorMsg from './ErrorMsg'
 
 class ModalDetalle extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      productos: [],
       proveedor: [],
+      productos: [],      
       bill:[],
       postHandler: false,
     }
@@ -21,10 +20,11 @@ class ModalDetalle extends Component {
         headers: { authorization: tokens.access_token }
       })
         .then(result => {
-          var productos = result.data;
+          var productos = result.data;          
           this.setState({ proveedor: productos[0].bill.provider })
           this.setState({ bill: productos[0].bill })
           this.setState({ productos: productos })
+          
         }).catch(res => {
           console.log('sin respuesta')
         })

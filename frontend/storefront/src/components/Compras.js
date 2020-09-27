@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
-import {Redirect} from 'react-router-dom';
-import ModalCliente from './ModalCliente'
 import ModalConfirm from './ModalConfirm';
 import ModalDetalle from './ModalDetalle'
 import ModalCompras from './ModalCompras';
@@ -36,8 +34,7 @@ class Detalle extends Component {
                 headers: { authorization: tokens.access_token }
             })
                 .then(result => {
-                    const facturas = result.data;
-                    console.log(facturas)
+                    const facturas = result.data;                  
                     this.setState({ facturas: facturas })
                 }).catch(res => {
                     console.log('sin respuesta')
@@ -100,7 +97,7 @@ class Detalle extends Component {
                         </div>
                     </div>
                 </div>
-                { this.state.showModal && <ModalCompras onClose={this.closeModal} upDate={this.getResolutions}/> }
+                { this.state.showModal && <ModalCompras onClose={this.closeModal} upDate={this.getCompras} url='http://localhost:5000/factura'/> }
                 { this.state.showModalDetalle && <ModalDetalle onClose={this.closeModal} id={this.state.id} /> }
                 <ModalConfirm open={this.state.showModalConfirm} mensaje="Estas seguro de eliminar estos registros ?" confirm={this.confirmDelete} cancel={this.cancelDelete} />
             </div>

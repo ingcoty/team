@@ -22,12 +22,12 @@ class Clientes extends Component {
         if (id) {
             for (var i in this.state.clientes) {
                 if (this.state.clientes[i].id == id) {
-                    this.state.initvalues = this.state.clientes[i]
+                    this.setState({ initvalues: this.state.clientes[i] })
                 }
             }
         }
         else {
-            this.state.initvalues = []
+            this.setState({ initvalues: [] })
         }
         this.setState({ showModal: true })
     }
@@ -37,10 +37,10 @@ class Clientes extends Component {
     }
 
     componentDidMount() {
-        this.getResolutions()
+        this.getClients()
     }
 
-    getResolutions = () => {
+    getClients = () => {
         try {
             const tokens = JSON.parse(sessionStorage.getItem('loginState'))
             Axios.get('http://localhost:5000/clienteslist', {
@@ -64,11 +64,12 @@ class Clientes extends Component {
     }
 
     confirmDelete = () => {
+        const tokens = JSON.parse(sessionStorage.getItem('loginState'))
         const id = this.state.idDelete
-        Axios.delete('http://localhost:5000/clientes/' + id)
+        Axios.delete('http://localhost:5000/clientes/' + id, { headers: { authorization: tokens.access_token } })
             .then(res => {
                 this.setState({ showModalConfirm: false })
-                this.getResolutions()
+                this.getClients()
             }).catch(res => {
                 console.log("Error")
             }
@@ -126,7 +127,7 @@ class Clientes extends Component {
 
                     </div>
                 </div>
-                {this.state.showModal && <ModalCliente onClose={this.closeModal} upDate={this.getResolutions} values={this.state.initvalues} url='http://localhost:5000/clientes' />}
+                {this.state.showModal && <ModalCliente onClose={this.closeModal} upDate={this.getClients} values={this.state.initvalues} url='http://localhost:5000/clientes' />}
                 <ModalConfirm open={this.state.showModalConfirm} mensaje="Estas seguro de eliminar estos registros ?" confirm={this.confirmDelete} cancel={this.cancelDelete} />
             </div>
         )

@@ -16,28 +16,10 @@ class CmbAutocomplete extends Component {
         this.source = this.props.source
     }
 
-
-    componentDidUpdate(prevProps) {
-        if (this.props.source !== prevProps.source) {
-            const options = []
-            Axios.get(this.props.source)
-                .then(res => {
-                    const data = res.data;
-                    data.map(item => {
-                        options.push({
-                            value: item.ID,
-                            text: item.NOMBRE
-                        })
-                    })
-                    this.setState({ options })
-                }
-                )
-        }
-    }
-
     componentDidMount() {
         const options = []
-        Axios.get(this.props.source)
+        const tokens = JSON.parse(sessionStorage.getItem('loginState'))
+        Axios.get(this.props.source, {headers: { authorization: tokens.access_token }})
             .then(res => {
                 const data = res.data;
                 this.setState({ fulldata: data })
@@ -67,7 +49,6 @@ class CmbAutocomplete extends Component {
                 this.props.getcode(this.state.fulldata[i])
             }
         }
-        //this.props.closeMsg()
     }
 
     render() {
