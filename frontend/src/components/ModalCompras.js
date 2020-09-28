@@ -74,7 +74,7 @@ class ModalCompras extends Component {
           <Modal.Content>
 
             <CmbAutocomplete
-              source="http://backend:5000/proveedoreslist"
+              source="http://localhost:5000/proveedoreslist"
               getcode={this.getCodProvider}
               closeMsg={this.closeMsgError}
               label={"Proveedor"}
@@ -82,7 +82,7 @@ class ModalCompras extends Component {
             />
 
             <CmbAutocomplete
-              source="http://backend:5000/productoslist"
+              source="http://localhost:5000/productoslist"
               getcode={this.getCodProduct}
               closeMsg={this.closeMsgError}
               label={"Producto"}

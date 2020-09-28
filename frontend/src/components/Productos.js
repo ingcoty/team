@@ -44,7 +44,7 @@ class Productos extends Component {
     getproductos = () => {
         try {
             const tokens = JSON.parse(sessionStorage.getItem('loginState'))
-            Axios.get('http://backend:5000/productoslist', {
+            Axios.get('http://localhost:5000/productoslist', {
                 headers: { authorization: tokens.access_token }
             })
                 .then(result => {
@@ -67,7 +67,7 @@ class Productos extends Component {
     confirmDelete = () => {
         const id = this.state.idDelete
         const tokens = JSON.parse(sessionStorage.getItem('loginState'))
-        Axios.delete('http://backend:5000/productos/' + id, {
+        Axios.delete('http://localhost:5000/productos/' + id, {
             headers: { authorization: tokens.access_token }
         })
             .then(res => {
@@ -126,7 +126,7 @@ class Productos extends Component {
 
                     </div>
                 </div>
-                {this.state.showModal && <ModalProductos onClose={this.closeModal} upDate={this.getproductos} values={this.state.initvalues} url='http://backend:5000/productos' />}
+                {this.state.showModal && <ModalProductos onClose={this.closeModal} upDate={this.getproductos} values={this.state.initvalues} url='http://localhost:5000/productos' />}
                 <ModalConfirm open={this.state.showModalConfirm} mensaje="Estas seguro de eliminar estos registros ?" confirm={this.confirmDelete} cancel={this.cancelDelete} />
             </div>
         )

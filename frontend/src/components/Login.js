@@ -18,7 +18,7 @@ class Login extends Component {
 
     access = () => {
         const data = { 'user': this.userName, 'password': this.password }
-        Axios.post('http://backend:5000/login', data)
+        Axios.post('http://localhost:5000/login', data)
             .then(res => {
                 console.log(res)
                 if (res.data.auth == "true") {

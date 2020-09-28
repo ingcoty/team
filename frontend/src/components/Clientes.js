@@ -43,7 +43,7 @@ class Clientes extends Component {
     getClients = () => {
         try {
             const tokens = JSON.parse(sessionStorage.getItem('loginState'))
-            Axios.get('http://backend:5000/clienteslist', {
+            Axios.get('http://localhost:5000/clienteslist', {
                 headers: { authorization: tokens.access_token }
             })
                 .then(result => {
@@ -66,7 +66,7 @@ class Clientes extends Component {
     confirmDelete = () => {
         const tokens = JSON.parse(sessionStorage.getItem('loginState'))
         const id = this.state.idDelete
-        Axios.delete('http://backend:5000/clientes/' + id, { headers: { authorization: tokens.access_token } })
+        Axios.delete('http://localhost:5000/clientes/' + id, { headers: { authorization: tokens.access_token } })
             .then(res => {
                 this.setState({ showModalConfirm: false })
                 this.getClients()
@@ -127,7 +127,7 @@ class Clientes extends Component {
 
                     </div>
                 </div>
-                {this.state.showModal && <ModalCliente onClose={this.closeModal} upDate={this.getClients} values={this.state.initvalues} url='http://backend:5000/clientes' />}
+                {this.state.showModal && <ModalCliente onClose={this.closeModal} upDate={this.getClients} values={this.state.initvalues} url='http://localhost:5000/clientes' />}
                 <ModalConfirm open={this.state.showModalConfirm} mensaje="Estas seguro de eliminar estos registros ?" confirm={this.confirmDelete} cancel={this.cancelDelete} />
             </div>
         )

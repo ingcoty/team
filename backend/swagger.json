@@ -1,0 +1,957 @@
+{
+    "swagger": "2.0",
+    "basePath": "/",
+    "paths": {
+        "/clientes": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "operationId": "get_clients",
+                "parameters": [
+                    {
+                        "description": "id del cliente",
+                        "name": "id",
+                        "type": "string",
+                        "in": "query"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "put": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "actualizar un cliente",
+                "operationId": "put_clients",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/cliente"
+                        }
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "crear un nuevo cliente",
+                "operationId": "post_clients",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/cliente"
+                        }
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "borrar un cliente",
+                "operationId": "delete_clients",
+                "parameters": [
+                    {
+                        "description": "id del cliente a eliminar",
+                        "name": "id",
+                        "type": "string",
+                        "in": "query"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            }
+        },
+        "/clientes/{id}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "operationId": "get_clients",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "id del cliente"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "put": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "actualizar un cliente",
+                "operationId": "put_clients",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/cliente"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "crear un nuevo cliente",
+                "operationId": "post_clients",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/cliente"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "borrar un cliente",
+                "operationId": "delete_clients",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "id del cliente a eliminar"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            }
+        },
+        "/clienteslist": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "listar clientes",
+                "operationId": "get_clients_list",
+                "tags": [
+                    "default"
+                ]
+            }
+        },
+        "/detalle": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "operationId": "get_detalle",
+                "tags": [
+                    "default"
+                ]
+            },
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "crear una nueva factura",
+                "operationId": "post_detalle",
+                "tags": [
+                    "default"
+                ]
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "borrar detalle de una factura",
+                "operationId": "delete_detalle",
+                "tags": [
+                    "default"
+                ]
+            }
+        },
+        "/detalle/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "operationId": "get_detalle",
+                "tags": [
+                    "default"
+                ]
+            },
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "crear una nueva factura",
+                "operationId": "post_detalle",
+                "tags": [
+                    "default"
+                ]
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "borrar detalle de una factura",
+                "operationId": "delete_detalle",
+                "tags": [
+                    "default"
+                ]
+            }
+        },
+        "/factura": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "obtener una factura id",
+                "operationId": "get_factura",
+                "parameters": [
+                    {
+                        "description": "id de la factura",
+                        "name": "id",
+                        "type": "string",
+                        "in": "query"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "crear una nueva factura",
+                "operationId": "post_factura",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/factura"
+                        }
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "borrar una factura",
+                "operationId": "delete_factura",
+                "parameters": [
+                    {
+                        "description": "id de la factura a borrar",
+                        "name": "id",
+                        "type": "string",
+                        "in": "query"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            }
+        },
+        "/factura/{id}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "obtener una factura id",
+                "operationId": "get_factura",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "id de la factura"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "crear una nueva factura",
+                "operationId": "post_factura",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/producto"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "borrar una factura",
+                "operationId": "delete_factura",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "id de la factura a borrar"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            }
+        },
+        "/facturalist": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "listar facturas",
+                "operationId": "get_factura_list",
+                "tags": [
+                    "default"
+                ]
+            }
+        },
+        "/login": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "operationId": "post_login",
+                "tags": [
+                    "default"
+                ]
+            }
+        },
+        "/productos": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "obtener un Products por id",
+                "operationId": "get_productos",
+                "parameters": [
+                    {
+                        "description": "id del producto",
+                        "name": "id",
+                        "type": "string",
+                        "in": "query"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "put": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "actualizar un Products",
+                "operationId": "put_productos",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/producto"
+                        }
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "crear un nuevo Products",
+                "operationId": "post_productos",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/producto"
+                        }
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "borrar un Products",
+                "operationId": "delete_productos",
+                "tags": [
+                    "default"
+                ]
+            }
+        },
+        "/productos/{id}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "obtener un Products por id",
+                "operationId": "get_productos",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "id del producto"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "put": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "actualizar un Products",
+                "operationId": "put_productos",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/producto"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "crear un nuevo Products",
+                "operationId": "post_productos",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/producto"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "borrar un Products",
+                "operationId": "delete_productos",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            }
+        },
+        "/productoslist": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "listar productos",
+                "operationId": "get_productos_list",
+                "parameters": [
+                    {
+                        "description": "id del producto a borrar",
+                        "name": "id",
+                        "type": "string",
+                        "in": "query"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            }
+        },
+        "/proveedores": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "obtener un Provider por id",
+                "operationId": "get_providers",
+                "parameters": [
+                    {
+                        "description": "id del proveedor",
+                        "name": "id",
+                        "type": "string",
+                        "in": "query"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "put": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "actualizar un Provider",
+                "operationId": "put_providers",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/proveedor"
+                        }
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "crear un nuevo Provider",
+                "operationId": "post_providers",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/proveedor"
+                        }
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "borrar un Provider",
+                "operationId": "delete_providers",
+                "parameters": [
+                    {
+                        "description": "id del proveedor a borrar",
+                        "name": "id",
+                        "type": "string",
+                        "in": "query"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            }
+        },
+        "/proveedores/{id}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "obtener un Provider por id",
+                "operationId": "get_providers",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "id del proveedor"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "put": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "actualizar un Provider",
+                "operationId": "put_providers",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/proveedor"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "crear un nuevo Provider",
+                "operationId": "post_providers",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/proveedor"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "borrar un Provider",
+                "operationId": "delete_providers",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "id del proveedor a borrar"
+                    }
+                ],
+                "tags": [
+                    "default"
+                ]
+            }
+        },
+        "/proveedoreslist": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "listar provider",
+                "operationId": "get_providers_list",
+                "tags": [
+                    "default"
+                ]
+            }
+        },
+        "/usuario": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "operationId": "post_usuario",
+                "tags": [
+                    "default"
+                ]
+            }
+        }
+    },
+    "info": {
+        "title": "API",
+        "version": "1.0"
+    },
+    "produces": [
+        "application/json"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "tags": [
+        {
+            "name": "default",
+            "description": "Default namespace"
+        }
+    ],
+    "definitions": {
+        "cliente": {
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "integer"
+                }
+            },
+            "type": "object"
+        },
+        "proveedor": {
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "integer"
+                }
+            },
+            "type": "object"
+        },
+        "producto": {
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                }
+            },
+            "type": "object"
+        },
+      "factura": {
+            "properties":
+               {
+                  "provider": "integer",
+                  "date": "string",
+                  "value": "integer",
+                  "productos" : [
+                    {
+                      "id": "integer",
+                      "quantity": "integer",
+                      "price": "integer"
+                    }
+                  ]
+               }
+            },
+            "type": "object"
+    },
+    "responses": {
+        "ParseError": {
+            "description": "When a mask can't be parsed"
+        },
+        "MaskError": {
+            "description": "When any error occurs on mask"
+        }
+    }
+}

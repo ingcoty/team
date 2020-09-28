@@ -55,3 +55,5 @@ services:
     - backend
     links:
     - backend
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t

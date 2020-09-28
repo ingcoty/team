@@ -43,7 +43,7 @@ class Proveedores extends Component {
     getproveedores = () => {
         try {
             const tokens = JSON.parse(sessionStorage.getItem('loginState'))
-            Axios.get('http://backend:5000/proveedoreslist', {
+            Axios.get('http://localhost:5000/proveedoreslist', {
                 headers: { authorization: tokens.access_token }
             })
                 .then(result => {
@@ -66,7 +66,7 @@ class Proveedores extends Component {
     confirmDelete = () => {
         const id = this.state.idDelete
         const tokens = JSON.parse(sessionStorage.getItem('loginState')) 
-        Axios.delete('http://backend:5000/proveedores/' + id, {headers: { authorization: tokens.access_token }} )
+        Axios.delete('http://localhost:5000/proveedores/' + id, {headers: { authorization: tokens.access_token }} )
             .then(res => {
                 this.setState({ showModalConfirm: false })
                 this.getproveedores()
@@ -127,7 +127,7 @@ class Proveedores extends Component {
 
                     </div>
                 </div>
-                {this.state.showModal && <ModalClientes onClose={this.closeModal} upDate={this.getproveedores} values={this.state.initvalues} url='http://backend:5000/proveedores' />}
+                {this.state.showModal && <ModalClientes onClose={this.closeModal} upDate={this.getproveedores} values={this.state.initvalues} url='http://localhost:5000/proveedores' />}
                 <ModalConfirm open={this.state.showModalConfirm} mensaje="Estas seguro de eliminar estos registros ?" confirm={this.confirmDelete} cancel={this.cancelDelete} />
             </div>
         )
