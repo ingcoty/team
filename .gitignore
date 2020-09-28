@@ -1,7 +1,6 @@
 database/*
 db/*
 mssql/*
-docker-compose.yaml
 *.pyc
 .idea/*
 prueba/*

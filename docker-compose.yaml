@@ -1,0 +1,57 @@
+version: '3.5'
+
+services:
+  mssql:
+    restart: always
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    command: /bin/bash ./entrypoint.sh
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=#A1b2c3d4d5e
+      - MSSQL_PID=Developer
+      - DATABASE=tienda_teams
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./mssql/data:/var/opt/mssql/data
+      - ./database/entrypoint.sh:/entrypoint.sh
+      - ./database/db-init.sh:/db-init.sh
+      - ./database/db-init.sql:/db-init.sql
+  
+  backend:
+    restart: always
+    container_name: backend
+    build: ./backend
+    ports: 
+      - "5000:5000"
+    depends_on: 
+      - mssql
+    links:
+      - mssql
+    # command: python -m backend.app
+    # command: flask run --host=0.0.0.0 --port=5000
+    environment:
+      - FLASK_DEBUG=1
+      - PYTHONUNBUFFERED=1
+      - DATABASE_USER=SA
+      - DATABASE_PASSWORD=#A1b2c3d4d5e
+      - DATABASE=tienda_teams
+      - DATABASE_HOST=mssql
+      - DATABASE_PORT=1433
+      - ACCEPT_EULA=Y
+      - FLASK_ENV=development
+      - FLASK_APP=app.py
+    volumes:
+      - ./backend/migrations:/team/backend/migrations
+
+
+  frontend:
+    restart: always
+    container_name: frontend
+    build: ./frontend
+    ports:
+    - "3000:3000"
+    depends_on:
+    - backend
+    links:
+    - backend
