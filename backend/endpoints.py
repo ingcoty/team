@@ -5,24 +5,26 @@ from flask_jwt_extended import (create_access_token, create_refresh_token,
 from flask_restful import Api, Resource, reqparse
 
 from backend.models import (BillDetail, BillHeader, Client, Inventory, Products,
-                    Provider, User)
+                            Provider, User)
 from backend.schemas import (BillDetailSchema, BillHeaderSchema, ClientSchema,
-                     ProductsSchema, ProviderSchema)
+                             ProductsSchema, ProviderSchema)
 from backend import db
 
 
 class Login(Resource):
     def post(self):
+        data = request.get_json()
+        print(data)
         parser = reqparse.RequestParser()
         parser.add_argument('user', help='This field cannot be blank', required=True)
         parser.add_argument('password', help='This field cannot be blank', required=True)
         data = parser.parse_args()
         existingUser = db.session.query(User).filter(User.user == data['user']).first()
 
-        if(not existingUser):
-            return {'auth':'false'}
+        if (not existingUser):
+            return {'auth': 'false'}
 
-        if(data['password'] == existingUser.password):
+        if (data['password'] == existingUser.password):
             access_token = create_access_token(identity=data['user'])
             refresh_token = create_refresh_token(identity=data['user'])
             return {
@@ -36,16 +38,16 @@ class Login(Resource):
 
 
 class Clients(Resource):
-    """obtener un cliente por id"""
 
     @jwt_required
     def get(self, id):
+        """obtener un cliente por id"""
         result = Client.query.filter_by(id=id).first()
-        if(result):
+        if (result):
             res_schema = ClientSchema().dump(result)
             return res_schema
         else:
-            return{"message":"Cliente no existe"},404
+            return {"message": "Cliente no existe"}, 404
 
     @jwt_required
     def post(self):
@@ -53,7 +55,7 @@ class Clients(Resource):
         data = request.get_json()['data']
         exist = Client().query.filter_by(id=data['id']).first()
         if exist != None:
-            return{"message":"cliente existe"}, 404
+            return {"message": "cliente existe"}, 404
 
         newClient = Client()
         newClient.id = data['id']
@@ -64,7 +66,7 @@ class Clients(Resource):
         db.session.add(newClient)
         db.session.commit()
         datareturn = Client().query.filter_by(id=data['id']).first()
-        return{"data": ClientSchema().dump(datareturn)}, 201
+        return {"data": ClientSchema().dump(datareturn)}, 201
 
     @jwt_required
     def put(self):
@@ -72,7 +74,7 @@ class Clients(Resource):
         data = request.get_json()['data']
         UpClient = db.session.query(Client).filter(Client.id == data['id']).first()
         if UpClient == None:
-            return{ "message": "cliente no existe"}, 404
+            return {"message": "cliente no existe"}, 404
         UpClient.id = data['id']
         UpClient.name = data['name']
         UpClient.address = data['address']
@@ -91,7 +93,7 @@ class Clients(Resource):
             return {"message": "cliente no existe"}, 404
         db.session.delete(dataToDelete)
         db.session.commit()
-        return {"data": id}, 202
+        return {"data": id}, 200
 
 
 class ClientsList(Resource):
@@ -108,11 +110,11 @@ class Providers(Resource):
     @jwt_required
     def get(self, id):
         result = Provider.query.filter_by(id=id).first()
-        if(result):
+        if (result):
             res_schema = ProviderSchema().dump(result)
             return res_schema
         else:
-            return{"message":"Provider no existe"},404
+            return {"message": "Provider no existe"}, 404
 
     @jwt_required
     def post(self):
@@ -120,7 +122,7 @@ class Providers(Resource):
         data = request.get_json()['data']
         exist = Provider().query.filter_by(id=data['id']).first()
         if exist != None:
-            return{"message":"Provider existe"}, 404
+            return {"message": "Provider existe"}, 404
 
         newProvider = Provider()
         newProvider.id = data['id']
@@ -131,8 +133,7 @@ class Providers(Resource):
         db.session.add(newProvider)
         db.session.commit()
         datareturn = Provider().query.filter_by(id=data['id']).first()
-        return{"data": ProviderSchema().dump(datareturn)}, 201
-
+        return {"data": ProviderSchema().dump(datareturn)}, 201
 
     @jwt_required
     def put(self):
@@ -140,7 +141,7 @@ class Providers(Resource):
         data = request.get_json()['data']
         UpProvider = db.session.query(Provider).filter(Provider.id == data['id']).first()
         if UpProvider == None:
-            return{ "message": "Provider no existe"}, 404
+            return {"message": "Provider no existe"}, 404
         UpProvider.id = data['id']
         UpProvider.name = data['name']
         UpProvider.address = data['address']
@@ -150,7 +151,6 @@ class Providers(Resource):
         db.session.commit()
         UpProvider = db.session.query(Provider).filter(Provider.id == data['id']).first()
         return {"data": ProviderSchema().dump(UpProvider)}, 201
-
 
     @jwt_required
     def delete(self, id):
@@ -177,11 +177,11 @@ class Productos(Resource):
     @jwt_required
     def get(self, id):
         result = Products.query.filter_by(id=id).first()
-        if(result):
+        if (result):
             res_schema = ProductsSchema().dump(result)
             return res_schema
         else:
-            return{"message":"Producto no existe"},404
+            return {"message": "Producto no existe"}, 404
 
     @jwt_required
     def post(self):
@@ -189,7 +189,7 @@ class Productos(Resource):
         data = request.get_json()['data']
         exist = Products().query.filter_by(id=data['id']).first()
         if exist != None:
-            return{"message":"Producto existe"}, 404
+            return {"message": "Producto existe"}, 404
 
         newProducts = Products()
         newProducts.id = data['id']
@@ -198,7 +198,7 @@ class Productos(Resource):
         db.session.add(newProducts)
         db.session.commit()
         datareturn = Products().query.filter_by(id=data['id']).first()
-        return{"data": ProductsSchema().dump(datareturn)}, 201
+        return {"data": ProductsSchema().dump(datareturn)}, 201
 
     @jwt_required
     def put(self):
@@ -206,7 +206,7 @@ class Productos(Resource):
         data = request.get_json()['data']
         UpProducts = db.session.query(Products).filter(Products.id == data['id']).first()
         if UpProducts == None:
-            return{ "message": "Producto no existe"}, 404
+            return {"message": "Producto no existe"}, 404
         UpProducts.id = data['id']
         UpProducts.description = data['description']
         UpProducts.price = data['price']
@@ -240,11 +240,11 @@ class Factura(Resource):
     @jwt_required
     def get(self, id):
         result = BillHeader.query.filter_by(id=id).first()
-        if(result):
+        if (result):
             res_schema = BillHeaderSchema().dump(result)
             return res_schema
         else:
-            return{"message":"Producto no existe"},404
+            return {"message": "Producto no existe"}, 404
 
     @jwt_required
     def post(self):
@@ -270,17 +270,19 @@ class Factura(Resource):
             detalle.unitprice = producto['price']
             db.session.add(detalle)
 
-
         db.session.commit()
         return {"data": BillHeaderSchema().dump(factura)}, 201
 
-
+    # metodo solo utlizado en las pruebas
     @jwt_required
     def delete(self, id):
         """borrar una factura"""
         dataToDelete = BillHeader.query.get(id)
+        dataToDeleteDetalil = BillDetail.query.filter_by(bill_id=id).first()
         if dataToDelete == None:
             return {"message": "Factura no existe"}, 404
+
+        db.session.delete(dataToDeleteDetalil)
         db.session.delete(dataToDelete)
         db.session.commit()
         return {"data": id}, 202
@@ -300,11 +302,11 @@ class Detalle(Resource):
     @jwt_required
     def get(self, id):
         result = BillDetail.query.filter_by(bill_id=id).all()
-        if(result):
+        if (result):
             res_schema = BillDetailSchema(many=True).dump(result)
             return res_schema
         else:
-            return{"message":"Producto no existe"},404
+            return {"message": "Producto no existe"}, 404
 
     @jwt_required
     def post(self):
@@ -332,7 +334,6 @@ class Detalle(Resource):
         db.session.commit()
         return {"data": BillHeaderSchema().dump(factura)}, 201
 
-
     @jwt_required
     def delete(self, id):
         """borrar una factura"""
@@ -353,7 +354,6 @@ class FacturaList(Resource):
 
 
 class Usuario(Resource):
-    @jwt_required
     def post(self):
         data = request.get_json()['data']
         newuser = User()
