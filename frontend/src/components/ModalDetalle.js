@@ -16,7 +16,7 @@ class ModalDetalle extends Component {
   componentDidMount() {
     try {
       const tokens = JSON.parse(sessionStorage.getItem('loginState'))
-      Axios.get('http://localhost:5000/detalle/' + this.props.id, {
+      Axios.get('http://backend:5000/detalle/' + this.props.id, {
         headers: { authorization: tokens.access_token }
       })
         .then(result => {

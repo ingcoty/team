@@ -30,7 +30,7 @@ class Detalle extends Component {
     getCompras = () => {
         try {
             const tokens = JSON.parse(sessionStorage.getItem('loginState'))
-            Axios.get('http://localhost:5000/facturalist', {
+            Axios.get('http://backend:5000/facturalist', {
                 headers: { authorization: tokens.access_token }
             })
                 .then(result => {
@@ -97,7 +97,7 @@ class Detalle extends Component {
                         </div>
                     </div>
                 </div>
-                { this.state.showModal && <ModalCompras onClose={this.closeModal} upDate={this.getCompras} url='http://localhost:5000/factura'/> }
+                { this.state.showModal && <ModalCompras onClose={this.closeModal} upDate={this.getCompras} url='http://backend:5000/factura'/> }
                 { this.state.showModalDetalle && <ModalDetalle onClose={this.closeModal} id={this.state.id} /> }
                 <ModalConfirm open={this.state.showModalConfirm} mensaje="Estas seguro de eliminar estos registros ?" confirm={this.confirmDelete} cancel={this.cancelDelete} />
             </div>
